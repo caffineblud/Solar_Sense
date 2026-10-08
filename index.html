@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SolarSense: AI Smart Energy Manager</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap">
+<style>
+*{box-sizing:border-box}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f1f8f3;--card:#fff;--ink:#12302b;--mut:#587068;--line:#d8e7de;--chip:#e2f1e8;--blue:#1c6fd1;--green:#1f8a4c;--amber:#f2a516;--red:#d9483b;--sky1:#bfe1ff;--sky2:#fff0cc;--onb:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1a1c;--card:#12272a;--ink:#e6f3ee;--mut:#8fb0a6;--line:#214146;--chip:#1a3a3a;--blue:#5aa5ff;--green:#4cc884;--amber:#ffbf3c;--red:#ff7a6b;--sky1:#12304f;--sky2:#2a2a3a;--onb:#06182b}}
+:root[data-theme=dark]{--bg:#0b1a1c;--card:#12272a;--ink:#e6f3ee;--mut:#8fb0a6;--line:#214146;--chip:#1a3a3a;--blue:#5aa5ff;--green:#4cc884;--amber:#ffbf3c;--red:#ff7a6b;--sky1:#12304f;--sky2:#2a2a3a;--onb:#06182b}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Outfit,'Noto Sans Devanagari',system-ui,sans-serif}
+h3{margin:0 0 8px;font-size:16px}small{color:var(--mut)}
+.side{display:none}main{padding:12px 14px 96px;max-width:1180px;margin:auto}
+.nv{background:none;border:0;color:var(--mut);font:inherit;cursor:pointer;display:flex;align-items:center;gap:10px}
+.nv.on{color:var(--blue);background:none}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(6,1fr);background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs .nv{flex-direction:column;gap:0;font-size:10px;padding:7px 2px;text-align:center;line-height:1.2}.tabs .nv span{font-size:19px}
+@media(min-width:820px){.side{display:flex;position:fixed;left:0;top:0;bottom:0;width:210px;flex-direction:column;gap:4px;padding:18px 12px;background:var(--card);border-right:1px solid var(--line)}.side .nv{padding:10px 12px;border-radius:12px}.side .nv.on{background:var(--chip)}.tabs{display:none}main{margin-left:210px;padding:18px 28px 40px}}
+.top{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}.brand{display:flex;gap:8px;align-items:center}.brand b{font-size:20px;display:block;line-height:1}.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}.btn:focus-visible,.nv:focus-visible,.pn:focus-visible,.strip button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn.pri{background:var(--green);border-color:var(--green);color:var(--onb);font-weight:600}.btn.on{background:var(--blue);border-color:var(--blue);color:var(--onb)}.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sw{position:relative;display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer}.sw input{position:absolute;opacity:0}.sw span{width:36px;height:20px;border-radius:12px;background:var(--line);position:relative}.sw span:after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s}.sw input:checked+span{background:var(--amber)}.sw input:checked+span:after{left:19px}.sw input:focus-visible+span{outline:2px solid var(--blue)}
+.banner{background:var(--amber);color:#2b1c00;border-radius:12px;padding:10px 14px;margin-bottom:12px;font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}@media(min-width:820px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{margin:0}.kpi span{color:var(--mut);font-size:13px}.kpi b{display:block;font-size:28px}.kpi i{font-style:normal}.kpi small{font-size:14px;font-weight:400}
+.bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden}.bar em{display:block;height:100%;background:var(--green);transition:width .3s}
+.hero{display:grid;padding:0;overflow:hidden}@media(min-width:820px){.hero{grid-template-columns:1.4fr 1fr}}.hero svg{width:100%;display:block}.hs{padding:14px}
+.clk{font-size:34px;font-weight:700;color:var(--blue)}.big{font-size:32px;font-weight:700;color:var(--green)}.big2{font-size:26px;font-weight:700;color:var(--amber)}
+.chw{position:relative}.chw svg{width:100%;height:auto;touch-action:pan-y}.gl{stroke:var(--line)}.ax{fill:var(--mut);font-size:10px}.mk{stroke:var(--blue);stroke-dasharray:3 3}.cx{stroke:var(--mut)}
+.tip{display:none;position:absolute;top:0;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 9px;font-size:12px;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.2);white-space:nowrap}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut)}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}.tw{overflow-x:auto}td.ac{color:var(--green);font-weight:600}
+.strip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:8px}.strip button{border:2px solid transparent;border-radius:8px;padding:8px 0;font:inherit;font-size:11px;color:var(--onb);cursor:pointer}.strip button.s{border-color:var(--ink)}
+.m-solar{background:var(--amber);color:#2b1c00!important}.m-charge{background:var(--green)}.m-dis{background:var(--blue)}.m-grid{background:var(--mut)}
+.pg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}.pn{border:2px solid transparent;border-radius:10px;padding:14px 0;font:inherit;font-weight:600;cursor:pointer;color:var(--onb);background-image:linear-gradient(rgba(255,255,255,.28) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.28) 1px,transparent 1px);background-size:50% 50%}.pn small{display:block;color:inherit;font-weight:400}
+.pn.g{background-color:var(--green)}.pn.a{background-color:var(--amber);color:#2b1c00}.pn.r{background-color:var(--red)}.pn.sel{border-color:var(--ink)}
+.al{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.nb{height:10px;border-radius:5px;background:var(--green)}.nb.neg{background:var(--amber)}
+.mb{display:flex;align-items:flex-end;gap:8px;height:140px}.mb button{flex:1;border:0;border-radius:8px 8px 0 0;background:var(--green);cursor:pointer;opacity:.7}.mb button.on{opacity:1;background:var(--blue)}.ml{display:flex;gap:8px;font-size:12px;color:var(--mut)}.ml span{flex:1;text-align:center}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;display:none;z-index:9}
+footer{color:var(--mut);font-size:12px;text-align:center;padding:16px 0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+body.locked .side,body.locked main,body.locked .tabs{display:none!important}
+.ab:empty{display:none}.ab{position:fixed;inset:0;z-index:20;overflow:auto;display:grid;place-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));background:radial-gradient(circle at 85% 12%,var(--amber) 0 54px,transparent 56px),linear-gradient(var(--sky1),var(--sky2))}
+.ac{width:min(400px,100%);margin:0;padding:22px}.ac h2{margin:8px 0 2px;font-size:24px}.ac form{display:grid;gap:10px;margin:14px 0 10px}
+.ac label{display:grid;gap:4px;font-size:13px;color:var(--mut)}.ac input{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.ac input:focus-visible{outline:2px solid var(--blue);outline-offset:1px}.ac .btn{width:100%}.ac .row{margin-bottom:0}
+.err{min-height:18px;color:var(--red);font-size:13px}.ac .hint{color:var(--mut);font-size:12px;text-align:center;margin:8px 0 0}
+</style></head><body class="locked">
+<div class="ab" id="auth"></div>
+<aside class="side" id="side"></aside>
+<main><header class="top" id="top"></header><div id="banner"></div><section id="view"></section>
+<footer>Prototype with simulated data. Planned stack: React, FastAPI, TimescaleDB, XGBoost/LSTM, pvlib.</footer></main>
+<nav class="tabs" id="tabs"></nav><div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),f1=n=>n.toFixed(1),pd=n=>String(n).padStart(2,'0'),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const T={app:['SolarSense','सोलरसेंस'],sub:['AI Smart Energy Manager','एआई स्मार्ट ऊर्जा प्रबंधक'],dash:['Dashboard','डैशबोर्ड'],fc:['Forecast','पूर्वानुमान'],opt:['Optimiser','शेड्यूल'],ph:['Panel Health','पैनल स्वास्थ्य'],com:['Community','समुदाय'],imp:['Impact','प्रभाव'],
+off:['Offline mode','ऑफ़लाइन मोड'],ban:['Running on local edge mode, will sync when online','स्थानीय एज मोड में चल रहा है, ऑनलाइन होने पर सिंक होगा'],demo:['Run demo','डेमो चलाएँ'],stop:['Stop demo','डेमो रोकें'],
+sol:['Solar output','सौर उत्पादन'],dem:['Demand','मांग'],bat:['Battery','बैटरी'],grid:['Grid draw','ग्रिड खपत'],sav:['Saved today','आज की बचत'],co2:['CO₂ avoided (kg)','CO₂ की बचत (किग्रा)'],
+cd:['Today: solar vs demand (kW)','आज: सौर बनाम मांग (kW)'],hint:['Touch or hover for values. Click to move the clock.','मान देखने के लिए छुएँ। घड़ी बदलने के लिए क्लिक करें।'],
+fct:['48-hour forecast (kW)','48 घंटे का पूर्वानुमान (kW)'],band:['Confidence band','भरोसे की सीमा'],acc:['Forecast accuracy','पूर्वानुमान सटीकता'],clear:['Clear','साफ़'],live:['Live weather','लाइव मौसम'],cloudy:['Cloudy','बादल'],monsoon:['Monsoon','मानसून'],
+usual:['Usual','सामान्य'],optd:['Optimised','अनुकूलित'],cost:['Grid cost per day','ग्रिड खर्च प्रति दिन'],carb:['Carbon per day','कार्बन प्रति दिन'],svd:['Optimised saves vs usual','अनुकूलन से बचत'],
+load:['Load','लोड'],why:['Why','कारण'],hrs:['Hour-by-hour plan','घंटेवार योजना'],
+m_solar:['Running on solar','सौर पर चल रहा'],m_charge:['Battery charging','बैटरी चार्ज हो रही'],m_dis:['Battery discharging','बैटरी डिस्चार्ज हो रही'],m_grid:['Using grid','ग्रिड का उपयोग'],
+pump:['Water pump','पानी का पंप'],ev:['EV charger','ईवी चार्जर'],wm:['Washing machine','वॉशिंग मशीन'],ac:['AC pre-cooling','एसी प्री-कूलिंग'],
+alerts:['Alerts','चेतावनियाँ'],clean:['Mark as cleaned','सफ़ाई हो गई'],dust:['Simulate dust','धूल जमाएँ'],ok:['All panels healthy','सभी पैनल ठीक हैं'],
+ns:['Neighbouring sites','पड़ोसी साइटें'],sur:['Surplus','अधिशेष'],sho:['Shortfall','कमी'],acpt:['Accept share','साझा स्वीकारें'],done:['Share accepted','साझा स्वीकृत'],
+ms:['Monthly savings','मासिक बचत'],su:['Solar self-used (kWh)','सौर स्वयं-उपयोग (kWh)'],mc:['CO₂ avoided (kg)','CO₂ बचत (किग्रा)'],tr:['Trees-equivalent','पेड़ों के बराबर'],m6:['Last 6 months (₹)','पिछले 6 महीने (₹)']};
+const t=k=>T[k][S.lang=='en'?0:1],L2=(a,b)=>S.lang=='en'?a:b;
+const S={tab:'dash',lang:'en',th:'',w:'clear',off:false,opt:true,hour:11,demo:0,sel:6,sh:12,mon:5,acc:{},eff:[98,97,96,99,95,97,82,98,96,88,97,99],lh:11};
+try{S.lang=localStorage.getItem('ss_l')||'en';S.th=localStorage.getItem('ss_t')||''}catch(e){}
+if(!S.th)S.th=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+const WF={clear:1,cloudy:.5,monsoon:.25,live:1},NZ={clear:.02,cloudy:.15,monsoon:.25,live:0},UNC={clear:.08,cloudy:.2,monsoon:.35,live:.12},ACC={clear:94,cloudy:86,monsoon:77,live:90},CAP=20,MIN=3;
+const avg=()=>S.eff.reduce((a,b)=>a+b)/12/98;
+const bell=h=>{h=((h%24)+24)%24;return h<6||h>18?0:Math.pow(Math.sin(Math.PI*(h-6)/12),1.2)};
+let LIVE=null;const SITE={lat:30.70,lon:76.72,kw:12},API=new URLSearchParams(location.search).get('api')||'http://localhost:8000';
+const sol=(h,w=S.w)=>w=='live'&&LIVE?LIVE.kw[cl(Math.floor(h),0,47)]*avg():12*bell(h)*WF[w]*(1+NZ[w]*Math.sin(h*2.3)*Math.sin(h*.7+1))*avg();
+const B=h=>2.2+1.6*Math.exp(-(((h+.5-8)/1.5)**2))+3.2*Math.exp(-(((h+.5-20)/2)**2))+1.4*Math.exp(-(((h+.5-13)/3)**2));
+const LD=[{k:'pump',kw:2.2,u:[6,8],o:[11,13]},{k:'ev',kw:3.3,u:[19,22],o:[12,15]},{k:'wm',kw:1,u:[20,21],o:[13,14]},{k:'ac',kw:1.8,u:[18,20],o:[15,17]}];
+const dem=(h,o)=>B(h)+LD.reduce((a,l)=>{const[x,y]=o?l.o:l.u;return a+(h>=x&&h<y?l.kw:0)},0);
+const tar=h=>h>=18&&h<22?9:7;
+function sim(o,w=S.w){let soc=10,r=[];for(let p=0;p<2;p++){r=[];for(let h=0;h<24;h++){const s=sol(h+.5,w),d=dem(h,o),n=s-d,s0=soc;let ch=0,dis=0,g=0,ex=0;if(n>=0){ch=Math.min(n,CAP-soc);ex=n-ch}else{dis=Math.min(-n,soc-MIN);g=-n-dis}soc+=ch-dis;
+const m=g>.05?'grid':dis>.05?'dis':ch>.05?'charge':'solar';r.push({h,s,d,ch,dis,g,ex,soc:soc/CAP*100,soc0:s0/CAP*100,t:tar(h),m})}}return r}
+const sum=(r,fn)=>r.reduce((a,q)=>a+fn(q),0);
+const mname=m=>t('m_'+m);
+/* charts */
+const PC=[];let DC=null;
+function chart(id,c){PC.push([id,c]);const W=600,H=230,L=32,R=8,Tp=8,Bt=22,pw=W-L-R,ph=H-Tp-Bt,x=i=>L+pw*i/(c.n-1),y=v=>Tp+ph*(1-Math.min(v,c.ymax)/c.ymax);c.x=x;c.d=[L,pw];c.xy=[Tp,H-Bt];
+let s=`<div class="chw"><svg viewBox="0 0 ${W} ${H}" id="${id}" role="img" aria-label="${c.label}">`;
+for(let k=0;k<=4;k++){const v=c.ymax*k/4;s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" class="gl"/><text x="${L-4}" y="${y(v)+3}" class="ax" text-anchor="end">${Math.round(v)}</text>`}
+for(let i=0;i<c.n;i+=c.step)s+=`<text x="${x(i)}" y="${H-6}" class="ax" text-anchor="middle">${c.xl(i)}</text>`;
+if(c.band)s+=`<path d="${c.band.map((p,i)=>(i?'L':'M')+x(i)+' '+y(p[1])).join('')}${c.band.map((p,i)=>{const j=c.n-1-i;return'L'+x(j)+' '+y(c.band[j][0])}).join('')}Z" fill="var(--amber)" opacity=".28"/>`;
+c.ser.forEach(q=>{const d=q.v.map((u,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(u).toFixed(1)).join('');if(q.fill)s+=`<path d="${d}L${x(c.n-1)} ${y(0)}L${x(0)} ${y(0)}Z" fill="${q.c}" opacity=".18"/>`;s+=`<path d="${d}" fill="none" stroke="${q.c}" stroke-width="2.2" stroke-linejoin="round"/>`});
+s+=`<line id="${id}mk" class="mk" y1="${Tp}" y2="${H-Bt}" x1="-9" x2="-9"/><line id="${id}cx" class="cx" y1="${Tp}" y2="${H-Bt}" style="display:none"/></svg><div class="tip" id="${id}tip"></div></div>`;
+s+=`<div class="lg">${c.ser.map(q=>`<span><i style="background:${q.c}"></i>${q.n}</span>`).join('')}${c.band?`<span><i style="background:var(--amber);opacity:.4"></i>${t('band')}</span>`:''}</div>`;return s}
+function bind([id,c]){const sv=$('#'+id),tp=$('#'+id+'tip'),cx=$('#'+id+'cx');if(c.now)DC=c;
+const ix=e=>{const r=sv.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width*600;return cl(Math.round((fx-c.d[0])/c.d[1]*(c.n-1)),0,c.n-1)};
+const show=e=>{const i=ix(e),X=c.x(i);cx.setAttribute('x1',X);cx.setAttribute('x2',X);cx.style.display='';tp.innerHTML=c.tip(i);tp.style.display='block';tp.style.left=cl(X/6,16,84)+'%'};
+sv.addEventListener('pointermove',show);sv.addEventListener('pointerdown',show);
+sv.addEventListener('pointerleave',()=>{cx.style.display='none';tp.style.display='none'});
+sv.addEventListener('click',e=>c.click&&c.click(ix(e)));if(c.now)mark()}
+function mark(){if(!DC||!$('#'+'dcmk'))return;const X=DC.x(cl(S.hour-.5,0,23));$('#dcmk').setAttribute('x1',X);$('#dcmk').setAttribute('x2',X)}
+/* views */
+const kpi=(id,ic,lb,u)=>`<div class="card kpi"><span>${ic} ${lb}</span><b><i id="${id}">0</i> <small>${u}</small></b>${id=='kb'?'<div class="bar"><em id="bb"></em></div>':''}</div>`;
+function vDash(){const r=sim(S.opt);return`<div class="card hero"><svg viewBox="0 0 400 170" aria-hidden="true"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient></defs>
+<rect width="400" height="170" fill="url(#sg)"/><rect id="nt" width="400" height="170" fill="#0a1a33" opacity="0"/><path d="M40 140A160 110 0 0 1 360 140" fill="none" stroke="var(--amber)" stroke-dasharray="3 5" opacity=".7"/>
+<circle id="sun" r="16" cx="40" cy="140" fill="var(--amber)"/><path d="M0 150Q70 118 140 146T280 142T400 136V170H0Z" fill="var(--green)" opacity=".7"/><path d="M0 162Q100 140 200 160T400 154V170H0Z" fill="var(--green)"/>
+<path d="M300 150l9-26 9 26zM322 154l7-20 7 20zM60 156l8-22 8 22z" fill="#14603a"/><rect x="238" y="140" width="34" height="3" fill="var(--blue)" opacity=".8"/><rect x="240" y="144" width="30" height="6" fill="var(--blue)"/></svg>
+<div class="hs"><div class="clk" id="clk"></div><small>${t('sav')}</small><div class="big" id="sv"></div><small>${t('co2')}</small><div class="big2" id="cv"></div></div></div>
+<div class="kpis">${kpi('ks','☀️',t('sol'),'kW')}${kpi('kd','⚡',t('dem'),'kW')}${kpi('kb','🔋',t('bat'),'%')}${kpi('kg','🔌',t('grid'),'kW')}</div>
+<div class="card"><h3>${t('cd')}</h3>${chart('dc',{n:24,step:3,ymax:14,now:1,label:t('cd'),xl:i=>i+'h',ser:[{n:t('sol'),c:'var(--amber)',v:r.map(q=>q.s),fill:1},{n:t('dem'),c:'var(--blue)',v:r.map(q=>q.d)}],
+tip:i=>`<b>${pd(i)}:00</b><br>☀️ ${f1(r[i].s)} kW<br>⚡ ${f1(r[i].d)} kW<br>🔋 ${Math.round(r[i].soc)}%`,click:i=>{S.hour=i+.5;tick()}})}<small>${t('hint')}</small></div>`}
+const set=(i,v)=>{const e=$('#'+i);if(e)e.textContent=v};
+function live(){if(S.tab!='dash'||!$('#ks'))return;const r=sim(S.opt),h=Math.floor(S.hour)%24,fr=S.hour-Math.floor(S.hour),c=r[h];let sv=0,co=0;
+for(let i=0;i<=h;i++){const k=i<h?1:fr,q=r[i];sv+=(q.d-q.g)*q.t*k;co+=(q.d-q.g)*.82*k}
+set('ks',f1(sol(S.hour)));set('kd',f1(c.d));const bt=c.soc0+(c.soc-c.soc0)*fr;set('kb',Math.round(bt));$('#bb').style.width=bt+'%';set('kg',f1(c.g));
+set('clk',pd(h)+':'+pd(Math.floor(fr*60)));set('sv','₹'+Math.round(sv));set('cv',Math.round(co));
+const day=S.hour>=6&&S.hour<=18,tt=day?(S.hour-6)/12:((S.hour+6)%24)/12,sn=$('#sun');sn.setAttribute('cx',200-160*Math.cos(Math.PI*tt));sn.setAttribute('cy',140-110*Math.sin(Math.PI*tt));sn.setAttribute('fill',day?'var(--amber)':'#d6dff0');
+$('#nt').setAttribute('opacity',.62*(1-Math.min(1,bell(S.hour)*2.2)));mark()}
+function vFc(){const u=UNC[S.w],sv=[],bd=[],dm=[];let e1=0,e2=0;for(let i=0;i<48;i++){const v=sol(i+.5);sv.push(v);const k=u*(1+i/48);bd.push(S.w=='live'&&LIVE?[LIVE.lo[i]*avg(),LIVE.hi[i]*avg()]:[Math.max(0,v*(1-k)),v*(1+k)]);dm.push(dem(i%24,S.opt));i<24?e1+=v:e2+=v}
+return`<div class="row">${(LIVE?['live','clear','cloudy','monsoon']:['clear','cloudy','monsoon']).map(w=>`<button class="btn ${S.w==w?'on':''}" data-a="w" data-v="${w}">${{live:'🛰️',clear:'☀️',cloudy:'⛅',monsoon:'🌧️'}[w]} ${t(w)}</button>`).join('')}</div>
+<div class="kpis"><div class="card kpi"><span>${t('acc')}</span><b>${ACC[S.w]}%</b><div class="bar"><em style="width:${ACC[S.w]}%"></em></div></div>
+<div class="card kpi"><span>${L2('Solar today','आज का सौर')}</span><b>${Math.round(e1)} <small>kWh</small></b></div><div class="card kpi"><span>${L2('Solar tomorrow','कल का सौर')}</span><b>${Math.round(e2)} <small>kWh</small></b></div>
+<div class="card kpi"><span>${L2('Confidence at +48h','+48 घं. पर भरोसा')}</span><b>±${Math.round(u*200)}%</b></div></div>
+<div class="card"><h3>${t('fct')}${S.w=='live'&&LIVE?` <small>🛰️ ${LIVE.src}</small>`:''}</h3>${chart('fcc',{n:48,step:6,ymax:16,label:t('fct'),xl:i=>(i%24)+'h'+(i>=24?'+':''),band:bd,ser:[{n:t('sol'),c:'var(--amber)',v:sv},{n:t('dem'),c:'var(--blue)',v:dm}],
+tip:i=>`<b>${L2(i<24?'Today':'Tomorrow',i<24?'आज':'कल')} ${pd(i%24)}:00</b><br>☀️ ${f1(sv[i])} kW (${f1(bd[i][0])}–${f1(bd[i][1])})<br>⚡ ${f1(dm[i])} kW`})}</div>`}
+const RS={pump:['Run the pump at 12 pm because solar surplus is expected.','दोपहर 12 बजे पंप चलाएँ क्योंकि सौर अधिशेष की उम्मीद है।'],ev:['Charge the EV from 12 to 3 pm: peak sun makes it the cheapest, cleanest energy.','ईवी को दोपहर 12 से 3 बजे चार्ज करें: तेज़ धूप में ऊर्जा सबसे सस्ती और स्वच्छ है।'],
+wm:['Wash at 1 pm while solar is high, instead of paying ₹9/kWh for evening grid power.','धुलाई दोपहर 1 बजे करें, शाम के ₹9/यूनिट ग्रिड के बजाय।'],ac:['Pre-cool from 3 to 5 pm on solar so the evening peak needs less AC.','दोपहर 3 से 5 बजे सौर से प्री-कूलिंग करें ताकि शाम को एसी कम चले।']};
+const tr=a=>pd(a[0])+':00–'+pd(a[1])+':00';
+function vOpt(){const ro=sim(true),ru=sim(false),ra=S.opt?ro:ru,cs=r=>sum(r,q=>q.g*q.t),cb=r=>sum(r,q=>q.g*.82),q=ra[S.sh];
+return`<div class="row"><button class="btn ${!S.opt?'on':''}" data-a="opt" data-v="0">${t('usual')}</button><button class="btn ${S.opt?'on':''}" data-a="opt" data-v="1">${t('optd')}</button></div>
+<div class="kpis"><div class="card kpi"><span>${t('cost')}</span><b>₹${Math.round(cs(ra))}</b></div><div class="card kpi"><span>${t('carb')}</span><b>${Math.round(cb(ra))} <small>kg</small></b></div>
+<div class="card kpi"><span>${t('svd')}</span><b style="color:var(--green)">₹${Math.round(cs(ru)-cs(ro))}</b></div><div class="card kpi"><span>${t('svd')}</span><b style="color:var(--green)">${Math.round(cb(ru)-cb(ro))} <small>kg CO₂</small></b></div></div>
+<div class="card"><h3>${t('hrs')}</h3><div class="strip">${ra.map(x=>`<button class="m-${x.m} ${x.h==S.sh?'s':''}" data-a="hr" data-v="${x.h}" aria-label="${x.h}:00 ${mname(x.m)}">${x.h}</button>`).join('')}</div>
+<div class="lg">${['solar','charge','dis','grid'].map(m=>`<span><i class="m-${m}"></i>${mname(m)}</span>`).join('')}</div>
+<p><b>${pd(q.h)}:00</b> · ${mname(q.m)} · ☀️ ${f1(q.s)} kW · ⚡ ${f1(q.d)} kW · 🔋 ${Math.round(q.soc)}% · 🔌 ${f1(q.g)} kW</p></div>
+<div class="card tw"><table><tr><th>${t('load')}</th><th>${t('usual')}</th><th>${t('optd')}</th><th>${t('why')}</th></tr>${LD.map(l=>`<tr><td>${t(l.k)}</td><td class="${S.opt?'':'ac'}">${tr(l.u)}</td><td class="${S.opt?'ac':''}">${tr(l.o)}</td><td style="min-width:210px">${RS[l.k][S.lang=='en'?0:1]}</td></tr>`).join('')}
+<tr><td>🔋 ${t('bat')}</td><td>–</td><td class="ac">12:00 / 18:00–22:00</td><td>${L2('The battery charges on solar surplus and discharges 6 to 10 pm to avoid the ₹9 peak grid.','बैटरी सौर अधिशेष से चार्ज होती है और शाम 6 से 10 बजे ₹9 के पीक ग्रिड से बचने के लिए डिस्चार्ज होती है।')}</td></tr></table></div>`}
+const pc=e=>e>=93?'g':e>=85?'a':'r';
+const al=i=>{const l=100-S.eff[i];return L2(`Panel ${i+1} is ${l}% below expected: ${l>=15?'likely dust, cleaning recommended':'light soiling, schedule a cleaning'}`,`पैनल ${i+1} अपेक्षा से ${l}% कम है: ${l>=15?'संभवतः धूल, सफ़ाई की सलाह':'हल्की गंदगी, सफ़ाई तय करें'}`)};
+function vPh(){const bad=S.eff.map((e,i)=>i).filter(i=>S.eff[i]<93),e=S.eff[S.sel],out=bell(S.hour)*WF[S.w]*e/100;
+return`<div class="kpis"><div class="card kpi"><span>${L2('Site efficiency','साइट दक्षता')}</span><b>${Math.round(S.eff.reduce((a,b)=>a+b)/12)}%</b></div><div class="card kpi"><span>${t('alerts')}</span><b>${bad.length}</b></div></div>
+<div class="card"><div class="pg">${S.eff.map((e,i)=>`<button class="pn ${pc(e)} ${i==S.sel?'sel':''}" data-a="sel" data-v="${i}" aria-label="Panel ${i+1} ${e}%">${i+1}<small>${e}%</small></button>`).join('')}</div>
+<div class="lg"><span><i style="background:var(--green)"></i>≥93%</span><span><i style="background:var(--amber)"></i>85–92%</span><span><i style="background:var(--red)"></i>&lt;85%</span></div>
+<p><b>${L2('Panel','पैनल')} ${S.sel+1}</b>: ${e}% · ${f1(out)} kW ${L2('now','अभी')} · ${L2('anomaly score','असामान्यता स्कोर')} ${((100-e)/30).toFixed(2)}</p>
+<div class="row"><button class="btn pri" data-a="clean" data-v="${S.sel}">🧽 ${t('clean')} (${S.sel+1})</button><button class="btn" data-a="dust">🌫️ ${t('dust')}</button></div></div>
+<div class="card"><h3>${t('alerts')}</h3>${bad.length?bad.map(i=>`<div class="al"><span>${S.eff[i]<85?'🔴':'🟠'} ${al(i)}</span><button class="btn" data-a="clean" data-v="${i}">${t('clean')}</button></div>`).join(''):`<p>✅ ${t('ok')}</p>`}</div>`}
+const SITES=[['Green Valley Farm','ग्रीन वैली फार्म',.8,.3],['Shree MSME Unit','श्री एमएसएमई यूनिट',.25,.85],['Village School','ग्राम विद्यालय',.4,.3]];
+function vCom(){const h=Math.floor(S.hour)%24,n=SITES.map(s=>({n:L2(s[0],s[1]),v:sol(S.hour)*s[2]-dem(h,S.opt)*s[3]})),mx=Math.max(...n.map(x=>Math.abs(x.v)),1),su=n.map(x=>({...x})).filter(x=>x.v>.2),de=n.map(x=>({...x})).filter(x=>x.v<-.2),tf=[];
+de.forEach(d=>su.forEach(s=>{const a=Math.min(-d.v,s.v);if(a>.1){tf.push({a,f:s.n,to:d.n,k:s.n+d.n});s.v-=a;d.v+=a}}));
+return`<div class="card"><h3>${t('ns')} · ${pd(h)}:00</h3>${n.map(x=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between"><span>${x.n}</span><b style="color:${x.v>=0?'var(--green)':'var(--amber)'}">${x.v>=0?t('sur'):t('sho')} ${f1(Math.abs(x.v))} kW</b></div><div class="nb ${x.v<0?'neg':''}" style="width:${Math.abs(x.v)/mx*100}%"></div></div>`).join('')}</div>
+<div class="card"><h3>🤝 ${L2('Suggested energy share','सुझाया गया ऊर्जा साझा')}</h3>${tf.length?tf.map(x=>`<div class="al"><span>${L2(`Send ${f1(x.a)} kW from ${x.f} to ${x.to}`,`${x.f} से ${x.to} को ${f1(x.a)} kW भेजें`)}<br><small>${L2(`Peer price ₹5 vs grid ₹8: saves ₹${Math.round(x.a*3)} per hour`,`पीयर दर ₹5 बनाम ग्रिड ₹8: प्रति घंटा ₹${Math.round(x.a*3)} बचत`)}</small></span>
+<button class="btn ${S.acc[x.k]?'on':'pri'}" data-a="acpt" data-v="${x.k}">${S.acc[x.k]?'✓ '+t('done'):t('acpt')}</button></div>`).join(''):`<p>${L2('No surplus to share right now. Sharing resumes when the sun is up.','अभी साझा करने लायक अधिशेष नहीं है। धूप में साझा शुरू होगा।')}</p>`}</div>`}
+const MN=[['Apr','May','Jun','Jul','Aug','Sep'],['अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर']],MF=[.95,1.05,.8,.6,.65,.9];
+function vImp(){const bl=fn=>[['clear',.55],['cloudy',.3],['monsoon',.15]].reduce((a,[w,p])=>a+p*fn(sim(true,w)),0),sv=bl(r=>sum(r,q=>(q.d-q.g)*q.t))*30,us=bl(r=>sum(r,q=>q.s-q.ex))*30,co=bl(r=>sum(r,q=>(q.d-q.g)*.82))*30,tr=Math.round(co*12/21),v=MF.map(m=>sv*m),mx=Math.max(...v);
+return`<div class="kpis"><div class="card kpi"><span>💰 ${t('ms')}</span><b>₹${Math.round(sv).toLocaleString('en-IN')}</b></div><div class="card kpi"><span>☀️ ${t('su')}</span><b>${Math.round(us).toLocaleString('en-IN')}</b></div>
+<div class="card kpi"><span>🌍 ${t('mc')}</span><b>${Math.round(co).toLocaleString('en-IN')}</b></div><div class="card kpi"><span>🌳 ${t('tr')}</span><b>${tr.toLocaleString('en-IN')}</b><small>${L2('annual absorption, if sustained','वार्षिक अवशोषण, यदि जारी रहे')}</small></div></div>
+<div class="card"><h3>${t('m6')}</h3><div class="mb">${v.map((x,i)=>`<button class="${i==S.mon?'on':''}" style="height:${x/mx*100}%" data-a="mon" data-v="${i}" aria-label="${MN[0][i]} ₹${Math.round(x)}"></button>`).join('')}</div><div class="ml">${MN[S.lang=='en'?0:1].map(m=>`<span>${m}</span>`).join('')}</div>
+<p><b>${MN[S.lang=='en'?0:1][S.mon]}</b>: ₹${Math.round(v[S.mon]).toLocaleString('en-IN')}</p></div>`}
+const V={dash:vDash,fc:vFc,opt:vOpt,ph:vPh,com:vCom,imp:vImp},IC=['☀️','📈','⚙️','🔆','🤝','🌳'];
+function view(){PC.length=0;$('#view').innerHTML=V[S.tab]();PC.forEach(bind);live()}
+function nav(){const h=Object.keys(V).map((k,i)=>`<button class="nv ${S.tab==k?'on':''}" data-a="tab" data-v="${k}"><span>${IC[i]}</span>${t(k)}</button>`).join('');$('#tabs').innerHTML=h;$('#side').innerHTML=`<div class="brand" style="margin-bottom:14px">${logo()}<b>${t('app')}</b></div>`+h}
+const logo=()=>`<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="var(--amber)"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3" stroke="var(--amber)" stroke-width="2" stroke-linecap="round"/><path d="M16 17c0-6 5-9 10-9 0 6-4 10-10 9z" fill="var(--green)"/></svg>`;
+function topbar(){document.documentElement.dataset.theme=S.th;document.documentElement.lang=S.lang=='en'?'en':'hi';
+$('#top').innerHTML=`<div class="brand">${logo()}<div><b>${t('app')}</b><small>${t('sub')}</small></div></div><div class="ctl"><label class="sw"><input type="checkbox" id="off" ${S.off?'checked':''}><span></span>${t('off')}</label>
+<button class="btn" data-a="out" aria-label="Sign out">👤 ${(S.user&&S.user.name||'').split(' ')[0]} ⏻</button><button class="btn" data-a="lang">${S.lang=='en'?'हिन्दी':'English'}</button><button class="btn" data-a="thm" aria-label="Theme">${S.th=='dark'?'☀️':'🌙'}</button><button class="btn pri" data-a="demo">${S.demo?'⏹ '+t('stop'):'▶ '+t('demo')}</button></div>`;
+$('#banner').innerHTML=S.off?`<div class="banner" role="status">📡 ${t('ban')}</div>`:''}
+function render(){topbar();nav();view()}
+function toast(m){const e=$('#toast');e.textContent=m;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2200)}
+function tick(){live();const h=Math.floor(S.hour);if(h!=S.lh){S.lh=h;if(S.tab=='com'||S.tab=='ph')view()}}
+const A={tab:v=>{S.tab=v;nav();view();scrollTo(0,0)},lang:()=>{S.lang=S.lang=='en'?'hi':'en';try{localStorage.setItem('ss_l',S.lang)}catch(e){}render()},
+thm:()=>{S.th=S.th=='dark'?'light':'dark';try{localStorage.setItem('ss_t',S.th)}catch(e){}topbar()},
+demo:()=>{if(S.demo){clearInterval(S.demo);S.demo=0}else{S.hour=0;S.demo=setInterval(()=>{S.hour+=.2;if(S.hour>=24){S.hour=23.9;A.demo();return}tick()},70)}topbar()},
+w:v=>{S.w=v;view()},opt:v=>{S.opt=v=='1';view()},hr:v=>{S.sh=+v;view()},sel:v=>{S.sel=+v;view()},mon:v=>{S.mon=+v;view()},
+clean:v=>{if(S.eff[v]>=97)return toast(L2(`Panel ${+v+1} is already clean`,`पैनल ${+v+1} पहले से साफ़ है`));S.eff[v]=98;toast(L2(`Panel ${+v+1} cleaned, output restored`,`पैनल ${+v+1} साफ़ हुआ, उत्पादन बहाल`));view()},
+dust:()=>{const ok=S.eff.map((e,i)=>i).filter(i=>S.eff[i]>=93);if(!ok.length)return toast(L2('All panels already dusty','सभी पैनल पहले से गंदे हैं'));const i=ok[Math.floor(Math.random()*ok.length)];S.eff[i]=100-(14+Math.floor(Math.random()*8));S.sel=i;view()},
+acpt:v=>{S.acc[v]=true;toast(L2('Share accepted, neighbours notified','साझा स्वीकृत, पड़ोसियों को सूचना भेजी'));view()}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b)A[b.dataset.a](b.dataset.v)});
+document.addEventListener('change',e=>{if(e.target.id=='off'){S.off=e.target.checked;$('#banner').innerHTML=S.off?`<div class="banner" role="status">📡 ${t('ban')}</div>`:'';toast(S.off?L2('Edge mode on','एज मोड चालू'):L2('Back online, synced','ऑनलाइन, सिंक हो गया'))}});
+setInterval(()=>{if(!S.demo){S.hour=(S.hour+1/60)%24;tick()}},500);
+/* ---------- login ---------- */
+const AT={app:['SolarSense','सोलरसेंस'],in:['Sign in','साइन इन'],up:['Create account','खाता बनाएँ'],nm:['Full name','पूरा नाम'],em:['Email','ईमेल'],pw:['Password (8+ characters)','पासवर्ड (8+ अक्षर)'],go:['Continue','आगे बढ़ें'],gu:['Continue as guest (demo)','अतिथि के रूप में जारी रखें (डेमो)'],
+ hi:['Sign in to manage your solar site','अपनी सौर साइट प्रबंधित करने के लिए साइन इन करें'],e1:['Enter your name','अपना नाम दर्ज करें'],e2:['Enter a valid email','सही ईमेल दर्ज करें'],e3:['Password must be at least 8 characters','पासवर्ड कम से कम 8 अक्षर का हो'],
+ e4:['Cannot reach the backend. Start it (python -m uvicorn main:app --port 8000), or continue as guest.','बैकएंड नहीं मिला। उसे चालू करें (python -m uvicorn main:app --port 8000) या अतिथि के रूप में जारी रखें।'],e5:['The running backend has no login support. Replace main.py and restart it.','चल रहे बैकएंड में लॉगिन नहीं है। main.py बदलें और रीस्टार्ट करें।'],wait:['Please wait…','कृपया प्रतीक्षा करें…'],note:['Guest mode keeps nothing saved.','अतिथि मोड में कुछ सहेजा नहीं जाता।']};
+const at=k=>AT[k][S.lang=='en'?0:1];let AM='in';
+const getTok=()=>{try{return localStorage.getItem('ss_tok')}catch(e){return null}},setTok=v=>{try{v?localStorage.setItem('ss_tok',v):localStorage.removeItem('ss_tok')}catch(e){}};
+function showAuth(msg=''){document.body.classList.add('locked');document.documentElement.dataset.theme=S.th;
+$('#auth').innerHTML=`<div class="card ac" role="dialog" aria-label="${at('in')}"><div class="brand">${logo()}<b style="font-size:22px">${at('app')}</b></div><h2>${at(AM)}</h2><small>${at('hi')}</small>
+<div class="row" style="margin-top:14px"><button class="btn ${AM=='in'?'on':''}" data-a="am" data-v="in">${at('in')}</button><button class="btn ${AM=='up'?'on':''}" data-a="am" data-v="up">${at('up')}</button></div>
+<form id="af" novalidate>${AM=='up'?`<label>${at('nm')}<input name="name" autocomplete="name" maxlength="60"></label>`:''}<label>${at('em')}<input name="email" type="email" autocomplete="email" inputmode="email"></label>
+<label>${at('pw')}<input name="password" type="password" autocomplete="${AM=='up'?'new-password':'current-password'}"></label><div class="err" id="ae" role="alert">${msg}</div><button class="btn pri" type="submit">${at('go')}</button></form>
+<button class="btn" data-a="guest">${at('gu')}</button><p class="hint">${at('note')}</p><div class="row" style="justify-content:center;margin-top:8px"><button class="btn" data-a="lang">${S.lang=='en'?'हिन्दी':'English'}</button><button class="btn" data-a="thm" aria-label="Theme">${S.th=='dark'?'☀️':'🌙'}</button></div></div>`}
+function enter(u){S.user=u;document.body.classList.remove('locked');$('#auth').innerHTML='';render();if(!LIVE)loadLive()}
+const _lang=A.lang,_thm=A.thm;A.lang=()=>{_lang();if(document.body.classList.contains('locked'))showAuth()};A.thm=()=>{_thm();if(document.body.classList.contains('locked'))showAuth()};
+A.am=v=>{AM=v;showAuth()};A.guest=()=>enter({name:'Guest',guest:true});
+A.out=()=>{if(S.demo){clearInterval(S.demo);S.demo=0}setTok(null);S.user=null;AM='in';showAuth()};
+document.addEventListener('submit',async e=>{if(e.target.id!='af')return;e.preventDefault();const f=new FormData(e.target),nm=(f.get('name')||'').trim(),em=(f.get('email')||'').trim(),pw=f.get('password')||'',er=m=>{$('#ae').textContent=m};
+if(AM=='up'&&!nm)return er(at('e1'));if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return er(at('e2'));if(pw.length<8&&AM=='up')return er(at('e3'));if(!pw)return er(at('e3'));
+er(at('wait'));try{const r=await fetch(`${API}/auth/${AM=='in'?'login':'register'}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:nm,email:em,password:pw})});const d=await r.json().catch(()=>({}));
+if(r.status==404||r.status==405)return er(at('e5'));if(!r.ok)return er(typeof d.detail=='string'?d.detail:at('e3'));setTok(d.token);enter({name:d.name})}catch(x){er(at('e4'))}});
+async function bootAuth(){showAuth();const tk=getTok();if(!tk)return;try{const r=await fetch(`${API}/auth/me`,{headers:{Authorization:'Bearer '+tk}});if(r.ok){const d=await r.json();enter({name:d.name})}else setTok(null)}catch(e){}}
+async function loadLive(){try{const c=new AbortController(),to=setTimeout(()=>c.abort(),6000);
+const r=await fetch(`${API}/forecast?lat=${SITE.lat}&lon=${SITE.lon}&kw=${SITE.kw}`,{signal:c.signal});clearTimeout(to);if(!r.ok)throw 0;const d=await r.json();
+if(!d.hours||d.hours.length<48)throw 0;LIVE={kw:d.hours.map(x=>x.kw),lo:d.hours.map(x=>x.low),hi:d.hours.map(x=>x.high),src:d.source};ACC.live=Math.round(d.confidence);
+S.w='live';render();toast(L2('Live weather loaded','लाइव मौसम लोड हुआ'))}catch(e){/* backend offline: keep the simulation */}}
+bootAuth();
+</script></body></html>

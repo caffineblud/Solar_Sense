@@ -69,6 +69,7 @@ This repository holds the **working prototype**: a single HTML file running on s
 
 ### Across the whole app
 
+- **Login screen** with sign in, create account and guest mode. Accounts live in the backend (hashed passwords, signed session tokens).
 - **Run demo** replays a full 24-hour day in seconds.
 - **Offline mode** switch shows the edge-mode banner: *Running on local edge mode, will sync when online*.
 - **Hindi / English** toggle translates every label, reason and alert.
@@ -82,15 +83,15 @@ This repository holds the **working prototype**: a single HTML file running on s
 | Capability | Prototype (this repo) | Planned product |
 |:--|:--:|:--:|
 | Solar and demand forecast | Simulated curves | XGBoost, LSTM, pvlib model |
-| Weather data | Clear / Cloudy / Monsoon presets | Open-Meteo, NASA POWER |
+| Weather data | **Live Open-Meteo + pvlib** (optional backend), plus Clear / Cloudy / Monsoon presets | Open-Meteo, NASA POWER |
 | Load and battery scheduling | Rule-based hourly plan | Cost and carbon optimiser |
 | Panel fault detection | Efficiency threshold and anomaly score | Isolation Forest on inverter data |
 | Explanations | Written reasons per load | SHAP-backed plain-language advice |
 | Offline edge mode | UI banner | Local scheduling, later sync |
 | Community sharing | Suggested transfers, accept button | Metered peer-to-peer sharing |
-| Backend and storage | None | FastAPI, TimescaleDB, MQTT |
+| Backend and storage | FastAPI `/forecast` endpoint, no database | FastAPI, TimescaleDB, MQTT |
 | Apps | One responsive web page | React dashboard and Flutter app |
-| Security | n/a | MFA, encrypted storage, RBAC |
+| Security | Account login: PBKDF2-hashed passwords, JWT sessions, login lockout | MFA, encrypted storage, RBAC |
 
 ---
 
@@ -112,6 +113,27 @@ xdg-open index.html      # Linux
 python -m http.server 8000
 # then visit http://localhost:8000
 ```
+
+### Live weather backend (optional)
+
+The page works on its own. Start the backend and a **Live weather** button appears on the Forecast tab, driven by real Open-Meteo weather and a pvlib solar model.
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+# test it: http://localhost:8000/forecast?lat=30.70&lon=76.72&kw=12
+```
+
+Then reload `index.html`. If the backend is hosted elsewhere, open the page with `?api=https://your-backend-url`. If it is unreachable, the page quietly falls back to the built-in simulation.
+
+| Endpoint | Returns |
+|:--|:--|
+| `GET /forecast` | 48-hour solar output in kW with a confidence band, cloud cover and temperature |
+| `POST /auth/register` | Creates an account, returns a session token |
+| `POST /auth/login` | Signs in, returns a session token (locks out after 5 bad tries) |
+| `GET /auth/me` | Checks a session token |
+| `GET /health` | `{"status": "ok"}` |
 
 > [!TIP]
 > Press **Run demo** first to watch a full day play out, then try the weather buttons on the Forecast tab.
@@ -169,7 +191,11 @@ flowchart LR
 
 ```text
 SolarSense/
-├── index.html      # the whole prototype: markup, styles and script
+├── index.html      # the whole frontend: markup, styles and script
+├── backend/
+│   ├── main.py             # FastAPI app: Open-Meteo + pvlib forecast
+│   ├── test_forecast.py    # offline tests
+│   └── requirements.txt
 ├── README.md
 ├── assets/         # screenshots and demo gif (add your own)
 └── docs/           # SIH presentation PDF and synopsis
@@ -197,7 +223,7 @@ SolarSense/
 - [x] Hindi and English
 - [x] Light and dark themes
 - [x] Offline edge-mode banner
-- [ ] Replace simulated curves with real weather data
+- [x] Live weather forecast through FastAPI, Open-Meteo and pvlib
 - [ ] Train forecasting models on public solar datasets
 - [ ] Read live data from inverters over MQTT or Modbus
 - [ ] Real fault detection with Isolation Forest
